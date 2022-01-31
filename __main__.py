@@ -4,7 +4,7 @@ import requests
 import pandas as pd
 from db import Db
 import pysftp
-from config import ftp_data_aa, ftp_data_local
+from config import ftp_data_aa, ftp_data_exa
 import pathlib
 import os
 from dateutil import parser
@@ -68,21 +68,21 @@ def main():
     df = pd.DataFrame.from_dict(final_df)
     print(df)
     if not df.empty:
-        filename = f"tmp/Delay_{datetime.today().strftime('%m%d%Y')}.csv"
-        # filename = f"tmp/test.csv"
+        # filename = f"tmp/Delay_{datetime.today().strftime('%m%d%Y')}.csv"
+        filename = f"tmp/Delay_test.csv"
         df.to_csv(filename, index=False)
 
         cnopts = pysftp.CnOpts()
         cnopts.hostkeys = None
         sftp = pysftp.Connection(
-            host=ftp_data_aa["host"],
-            username=ftp_data_aa["username"],
-            password=ftp_data_aa["password"],
+            host=ftp_data_exa["host"],
+            username=ftp_data_exa["username"],
+            password=ftp_data_exa["password"],
             cnopts=cnopts,
         )
         file_path = rf"{pathlib.Path().resolve()}\{filename}"
-        sftp.cwd("Inbound/")
-        # sftp.cwd("AATest/")
+        # sftp.cwd("Inbound/")
+        sftp.cwd("AATest/")
         if os.path.exists(file_path):
             print(file_path)
             sftp.put(localpath=file_path, confirm=False)
